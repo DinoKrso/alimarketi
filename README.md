@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ali Marketi
 
-## Getting Started
+Sajt za alimarketi.ba. Jezik sučelja je bosanski. Podaci su uzorak u `/data`, spremni da kasnije pređu u CMS.
 
-First, run the development server:
+## Pokretanje
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Otvori [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm start
+npm run lint
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Gdje se mijenja sadržaj
 
-## Learn More
+| Šta | Fajl |
+| --- | --- |
+| Poslovnice, adrese, sati, koordinate | `data/stores.ts` |
+| Akcije i cijene | `data/deals.ts` |
+| Oglasi za posao | `data/jobs.ts` |
+| Letci i arhiva | `data/flyers.ts` |
+| Telefon, e-pošta, društvene mreže | `data/site.ts` |
 
-To learn more about Next.js, take a look at the following resources:
+Kad prave cijene uđu u `data/deals.ts`, stavi `showSampleNotice: false` u `data/site.ts`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Lista za kupovinu je u `localStorage` (`alimarketi-lista`). Viber dijeli tekst preko `viber://forward?text=...`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## TODO za klijenta
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Zamijeniti tipografski znak službenim logotipom (narančasti „ali MARKETI”).
+- Ubaci prave fotografije poslovnica i proizvoda. Trenutne slike u `public/placeholders` su fotografski uzorci s oznakom PLACEHOLDER, ne konačne fotografije.
+- Potvrditi tačne adrese, ulazne koordinate i radno vrijeme svake poslovnice. Sada su kvartaški centri i jedinstveni sati, označeni u `data/stores.ts`.
+- Potvrditi da li je sjedište firme ista adresa kao Cash & Carry (Halilovići bb).
+- Zamijeniti PDF-ove u `public/letci` i stranice letka pravim sedmičnim letkom.
+- Spojiti obrasce (kontakt, veleprodaja, prijava na posao, Viber broj) na e-poštu ili form servis. Sada ostaju u pregledniku i to jasno piše korisniku.
+- CV upload je samo izbor fajla na uređaju. Nema slanja.
+- Pravni tekstovi (`/politika-privatnosti`, `/kolacici`) treba da pregleda pravnik prije objave.
+- Telefonski broj poslovnica je centrala `062 340 206` dok ne stignu brojevi radnji.
