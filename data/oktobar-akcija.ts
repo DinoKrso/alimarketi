@@ -1,4 +1,4 @@
-import type { Deal } from "@/data/types";
+import type { CategoryId, Deal } from "@/data/types";
 import proizvodiJson from "@/public/web_proizvodi/proizvodi.json";
 
 export type Proizvod = (typeof proizvodiJson)[number];
@@ -11,6 +11,25 @@ export function slikaSrc(slika: string) {
   return `/images/akcija-oktobar-2026/${file}`;
 }
 
+export const akcijaCategories: { id: CategoryId; label: string; kategorija: string }[] = [
+  { id: "osnovno", label: "Namirnice", kategorija: "Namirnice" },
+  { id: "slatkisi", label: "Slatko i grickalice", kategorija: "Slatko i grickalice" },
+  { id: "pica", label: "Pića", kategorija: "Pića" },
+  { id: "kucna-hemija", label: "Kozmetika i dom", kategorija: "Kozmetika i dom" },
+];
+
+function categoryOf(kategorija: string): CategoryId {
+  return akcijaCategories.find((item) => item.kategorija === kategorija)?.id ?? "osnovno";
+}
+
+const flagRank: Record<string, number> = {
+  "SUPER CIJENA": 0,
+  "+3 GRATIS": 1,
+  "+2 GRATIS": 1,
+  "TOP PONUDA": 2,
+  "ZA NAJMLAĐE": 3,
+};
+
 function toDeal(product: Proizvod): Deal {
   return {
     id: `oktobar-${product.rb}`,
@@ -18,20 +37,21 @@ function toDeal(product: Proizvod): Deal {
     brand: product.brend,
     unit: product.pakovanje,
     price: product.cijena_km,
-    category: "osnovno",
+    category: categoryOf(product.kategorija),
     categoryName: product.kategorija,
     badge: product.oznaka || undefined,
     storeIds: "all",
-    featured: product.oznaka === "SUPER CIJENA",
+    featured: Boolean(product.oznaka),
     image: slikaSrc(product.slika),
     imageAlt: `${product.brend} ${product.naziv}`,
   };
 }
 
-/** October groceries only — the akcije grid. */
-export const namirniceDeals: Deal[] = proizvodi.filter((item) => item.kategorija === "Namirnice").map(toDeal);
+export const oktobarDeals: Deal[] = proizvodi.map(toDeal);
 
-export const akcijaCategories = [{ id: "osnovno" as const, label: "Namirnice" }];
+export const editorialDeals: Deal[] = [...oktobarDeals].sort(
+  (a, b) => (flagRank[a.badge ?? ""] ?? 9) - (flagRank[b.badge ?? ""] ?? 9),
+);
 
 /** Hero cards: the super price, then two top offers from the same catalogue. */
 const heroRbs = [1, 15, 44];

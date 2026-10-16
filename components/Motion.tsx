@@ -125,6 +125,7 @@ export function SplitTitle({
   as = "h2",
   className,
   accent,
+  underline,
   delay = 0,
   immediate = false,
 }: {
@@ -133,6 +134,7 @@ export function SplitTitle({
   className?: string;
   /** Words (exact match) to paint in the brand colour. */
   accent?: string[];
+  underline?: string[];
   delay?: number;
   /** Animate on mount instead of on scroll (for above-the-fold titles). */
   immediate?: boolean;
@@ -153,20 +155,50 @@ export function SplitTitle({
         {...trigger}
         variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: delay } } }}
       >
-        {words.map((word, index) => (
-          <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-top">
-            <motion.span
-              className={cn("inline-block", accent?.includes(word) && "text-brand")}
-              variants={{
-                hidden: { y: "105%", rotate: 4 },
-                show: { y: "0%", rotate: 0, transition: { duration: 0.9, ease } },
-              }}
-            >
-              {word}
-            </motion.span>
-            {index < words.length - 1 ? " " : null}
-          </span>
-        ))}
+        {words.map((word, index) => {
+          const masked = (
+            <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-top">
+              <motion.span
+                className={cn("inline-block", accent?.includes(word) && "text-brand")}
+                variants={{
+                  hidden: { y: "105%", rotate: 4 },
+                  show: { y: "0%", rotate: 0, transition: { duration: 0.9, ease } },
+                }}
+              >
+                {word}
+              </motion.span>
+              {index < words.length - 1 ? " " : null}
+            </span>
+          );
+          if (!underline?.includes(word)) return masked;
+          return (
+            <span key={`${word}-${index}`} className="relative inline-block align-top">
+              {masked}
+              <svg
+                viewBox="0 0 200 24"
+                preserveAspectRatio="none"
+                className="pointer-events-none absolute -bottom-[0.04em] left-[-2%] h-[0.2em] w-[104%] overflow-visible text-brand"
+              >
+                <motion.path
+                  d="M3 17 C 46 6, 118 3, 197 12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="7"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                  variants={{
+                    hidden: { pathLength: 0, opacity: 0 },
+                    show: {
+                      pathLength: 1,
+                      opacity: 1,
+                      transition: { duration: 0.7, ease: [0.65, 0, 0.35, 1], delay: 0.5 + words.length * 0.07 },
+                    },
+                  }}
+                />
+              </svg>
+            </span>
+          );
+        })}
       </motion.span>
     </Tag>
   );

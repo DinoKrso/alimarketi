@@ -1,137 +1,210 @@
 "use client";
 
 import { DealCard } from "@/components/DealCard";
-import { akcijaCategories, namirniceDeals } from "@/data/oktobar-akcija";
-import { stores } from "@/data/stores";
+import { Icon } from "@/components/Icon";
+import { akcijaCategories, editorialDeals, oktobarDeals } from "@/data/oktobar-akcija";
 import type { CategoryId, Deal } from "@/data/types";
 import { cn } from "@/lib/cn";
-import { discountPercent } from "@/lib/format";
-import { AnimatePresence, motion } from "motion/react";
-import { useMemo, useState } from "react";
+import { productCountLabel } from "@/lib/format";
+import { btn } from "@/lib/ui";
+import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import Link from "next/link";
+import { useDeferredValue, useId, useMemo, useState } from "react";
 
-type SortKey = "discount" | "price" | "name";
+type SortKey = "featured" | "price" | "name";
 
-const editorial = [...namirniceDeals].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
+const sorts: { id: SortKey; label: string }[] = [
+  { id: "featured", label: "Istaknuto" },
+  { id: "price", label: "Najjeftinije" },
+  { id: "name", label: "A–Ž" },
+];
 
-function matchesStore(deal: Deal, storeId: string) {
-  if (storeId === "all") return true;
-  if (deal.storeIds === "all") return true;
-  return deal.storeIds.includes(storeId);
+const HOME_LIMIT = 8;
+
+function fold(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/đ/g, "d")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
+}
+
+const haystack = new Map(oktobarDeals.map((deal) => [deal.id, fold(`${deal.brand ?? ""} ${deal.name} ${deal.categoryName ?? ""}`)]));
+
+function countFor(category: CategoryId | "sve") {
+  return category === "sve" ? oktobarDeals.length : oktobarDeals.filter((deal) => deal.category === category).length;
 }
 
 export function DealExplorer({ variant = "home" }: { variant?: "home" | "full" }) {
+  const full = variant === "full";
   const [category, setCategory] = useState<CategoryId | "sve">("sve");
-  const [storeId, setStoreId] = useState("all");
-  const [sort, setSort] = useState<SortKey>(variant === "full" ? "discount" : "discount");
+  const [sort, setSort] = useState<SortKey>("featured");
+  const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
+  const group = useId();
 
-  const visible = useMemo(() => {
-    let list = (variant === "home" ? editorial : [...namirniceDeals]).filter((deal) => {
-      const categoryOk = category === "sve" || deal.category === category;
-      return categoryOk && matchesStore(deal, storeId);
+  const matching = useMemo(() => {
+    const needle = fold(deferredQuery.trim());
+    const list: Deal[] = editorialDeals.filter((deal) => {
+      if (category !== "sve" && deal.category !== category) return false;
+      return !needle || (haystack.get(deal.id) ?? "").includes(needle);
     });
-
-    if (variant === "full") {
-      list.sort((a, b) => {
-        if (sort === "price") return a.price - b.price;
-        if (sort === "name") return a.name.localeCompare(b.name, "bs");
-        return discountPercent(b.price, b.oldPrice) - discountPercent(a.price, a.oldPrice);
-      });
-    }
-
+    if (sort === "price") list.sort((a, b) => a.price - b.price);
+    if (sort === "name") list.sort((a, b) => a.name.localeCompare(b.name, "bs"));
     return list;
-  }, [category, sort, storeId, variant]);
+  }, [category, deferredQuery, sort]);
+
+  const visible = full ? matching : matching.slice(0, HOME_LIMIT);
 
   return (
-    <div>
-      <div className="no-scrollbar -mx-4 mb-6 flex sm:mb-8 gap-1.5 overflow-x-auto px-4 pb-1">
-        <div className="flex gap-1.5 rounded-full border border-line bg-white/70 p-1.5 backdrop-blur">
-          <Chip active={category === "sve"} onClick={() => setCategory("sve")}>
-            Sve
-          </Chip>
-          {akcijaCategories.map((item) => (
-            <Chip key={item.id} active={category === item.id} onClick={() => setCategory(item.id)}>
-              {item.label}
+    <LayoutGroup id={group}>
+      <div className="mb-6 flex flex-col gap-3 sm:mb-8">
+        <div className="no-scrollbar -mx-4 flex overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+          <div className="flex gap-1 rounded-full border border-line bg-white/70 p-1.5 backdrop-blur" role="group" aria-label="Kategorije">
+            <Chip active={category === "sve"} count={countFor("sve")} onClick={() => setCategory("sve")}>
+              Sve
             </Chip>
-          ))}
+            {akcijaCategories.map((item) => (
+              <Chip key={item.id} active={category === item.id} count={countFor(item.id)} onClick={() => setCategory(item.id)}>
+                {item.label}
+              </Chip>
+            ))}
+          </div>
         </div>
+
+        {full ? (
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <label className="relative block min-w-0 flex-1 sm:max-w-md">
+              <span className="sr-only">Pretraži akcije</span>
+              <Icon name="search" className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-muted" />
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Traži proizvod ili brend"
+                className="h-12 w-full rounded-full border border-line bg-white pr-11 pl-11 text-base text-ink transition-[border-color,box-shadow] outline-none placeholder:text-muted focus:border-brand focus:ring-4 focus:ring-brand/20 [&::-webkit-search-cancel-button]:hidden"
+              />
+              <AnimatePresence>
+                {query ? (
+                  <motion.button
+                    type="button"
+                    aria-label="Očisti pretragu"
+                    className="absolute top-1/2 right-2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-ink/5 text-ink hover:bg-ink/10"
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.6 }}
+                    onClick={() => setQuery("")}
+                  >
+                    <Icon name="close" className="h-4 w-4" />
+                  </motion.button>
+                ) : null}
+              </AnimatePresence>
+            </label>
+            <div className="flex shrink-0 rounded-full border border-line bg-white p-1 sm:ml-auto" role="group" aria-label="Sortiranje">
+              {sorts.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-pressed={sort === item.id}
+                  onClick={() => setSort(item.id)}
+                  className={cn(
+                    "relative min-h-10 flex-1 rounded-full px-3.5 text-sm font-semibold whitespace-nowrap transition-colors duration-300 sm:flex-none",
+                    sort === item.id ? "text-ink" : "text-muted hover:text-ink",
+                  )}
+                >
+                  {sort === item.id ? (
+                    <motion.span
+                      layoutId="deal-sort"
+                      className="absolute inset-0 rounded-full bg-brand-soft"
+                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    />
+                  ) : null}
+                  <span className="relative">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      {variant === "full" ? (
-        <div className="mb-6 grid grid-cols-2 gap-2 rounded-3xl border border-line bg-white p-3 sm:mb-8 sm:gap-3 sm:p-4">
-          <label className="block min-w-0 text-xs font-semibold text-ink sm:text-sm">
-            Poslovnica
-            <select
-              className="field mt-1.5"
-              value={storeId}
-              onChange={(event) => setStoreId(event.target.value)}
-            >
-              <option value="all">Sve poslovnice</option>
-              {stores.map((store) => (
-                <option key={store.slug} value={store.slug}>
-                  {store.neighbourhood}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="block min-w-0 text-xs font-semibold text-ink sm:text-sm">
-            Sortiranje
-            <select
-              className="field mt-1.5"
-              value={sort}
-              onChange={(event) => setSort(event.target.value as SortKey)}
-            >
-              <option value="discount">Najveći popust</option>
-              <option value="price">Niža cijena</option>
-              <option value="name">Naziv</option>
-            </select>
-          </label>
-        </div>
+      {full ? (
+        <p className="mb-4 text-sm font-medium text-muted" aria-live="polite">
+          {productCountLabel(matching.length)}
+          {deferredQuery.trim() ? ` za „${deferredQuery.trim()}”` : null}
+        </p>
       ) : null}
 
       {visible.length === 0 ? (
-        <p className="rounded-3xl border border-line bg-white px-6 py-12 text-center text-lg text-muted">
-          Nema akcija za ovaj izbor.
-        </p>
-      ) : (
-        <motion.ul
-          layout
-          className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 lg:gap-5"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: "some", margin: "0px 0px -12% 0px" }}
-          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center rounded-3xl border border-dashed border-line bg-white/60 px-6 py-14 text-center"
         >
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-soft text-brand">
+            <Icon name="search" />
+          </span>
+          <p className="mt-4 font-display text-2xl font-bold">Ništa za „{query.trim()}”</p>
+          <p className="mt-1 text-muted">Probaj kraći naziv ili samo brend.</p>
+          <button
+            type="button"
+            className={cn(btn.light, "mt-6")}
+            onClick={() => {
+              setQuery("");
+              setCategory("sve");
+            }}
+          >
+            Prikaži sve akcije
+          </button>
+        </motion.div>
+      ) : (
+        <ul className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 lg:gap-5">
           <AnimatePresence mode="popLayout">
             {visible.map((deal, index) => (
               <motion.li
                 key={deal.id}
-                layout
-                variants={{
-                  hidden: { opacity: 0, y: 40 },
-                  show: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } },
+                layout="position"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: "some", margin: "0px 0px -8% 0px" }}
+                exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.18 } }}
+                transition={{
+                  duration: 0.75,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: (index % 4) * 0.06,
+                  layout: { type: "spring", stiffness: 380, damping: 36 },
                 }}
-                exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.2 } }}
               >
                 <DealCard deal={deal} priority={index < 4} />
               </motion.li>
             ))}
           </AnimatePresence>
-        </motion.ul>
+        </ul>
       )}
+
+      {!full && matching.length > HOME_LIMIT ? (
+        <div className="mt-6 flex justify-center sm:mt-8">
+          <Link href="/akcije" className={btn.light}>
+            Još {matching.length - HOME_LIMIT} u katalogu
+            <Icon name="arrow" className="h-4 w-4" />
+          </Link>
+        </div>
+      ) : null}
 
       <p className="mt-6 text-center text-sm leading-relaxed text-muted">
         Cijene su izražene u KM sa uključenim PDV-om. Ponuda važi do isteka zaliha. Slike su ilustrativne.
       </p>
-    </div>
+    </LayoutGroup>
   );
 }
 
 function Chip({
   active,
+  count,
   children,
   onClick,
 }: {
   active: boolean;
+  count: number;
   children: string;
   onClick: () => void;
 }) {
@@ -141,7 +214,7 @@ function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "relative min-h-10 shrink-0 rounded-full px-4 text-[15px] font-semibold whitespace-nowrap transition-colors duration-300",
+        "relative flex min-h-10 shrink-0 items-center gap-2 rounded-full pr-2 pl-4 text-[15px] font-semibold whitespace-nowrap transition-colors duration-300",
         active ? "text-paper" : "text-ink hover:bg-ink/5",
       )}
     >
@@ -153,6 +226,14 @@ function Chip({
         />
       ) : null}
       <span className="relative">{children}</span>
+      <span
+        className={cn(
+          "relative grid h-6 min-w-6 place-items-center rounded-full px-1.5 text-xs font-bold tabular-nums transition-colors duration-300",
+          active ? "bg-brand text-ink" : "bg-ink/[0.06] text-muted",
+        )}
+      >
+        {count}
+      </span>
     </button>
   );
 }

@@ -105,7 +105,8 @@ export function listAsText(items: ListItem[]) {
   for (const item of items) {
     lines.push(`• ${item.name} (${item.unit}) × ${item.qty} - ${formatKm(item.price)} KM`);
   }
-  lines.push("", "alimarketi.ba/akcije");
+  const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+  lines.push("", `Okvirno ukupno: ${formatKm(total)} KM`, "", "alimarketi.ba/akcije");
   return lines.join("\n");
 }
 
@@ -169,7 +170,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
               key={item.id}
               src={item.src}
               alt=""
-              className="pointer-events-none fixed z-[80] h-14 w-14 rounded-[8px] border border-line object-cover"
+              className="pointer-events-none fixed z-[80] h-14 w-14 rounded-xl border border-line bg-white object-contain p-1 shadow-lg"
               style={{ left: item.from.left, top: item.from.top }}
               initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
               animate={{

@@ -23,6 +23,12 @@ const paths = {
   message: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
   zoom: "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3M11 8v6M8 11h6",
   close: "M18 6 6 18M6 6l12 12",
+  search: "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3",
+  minus: "M5 12h14",
+  trash: "M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6",
+  copy: "M9 9h11v11H9zM5 15H4V4h11v1",
+  send: "M22 2 11 13M22 2l-7 20-4-9-9-4z",
+  bell: "M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0",
 } as const;
 
 export type IconName = keyof typeof paths;

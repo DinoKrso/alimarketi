@@ -1,5 +1,6 @@
 import { LetakBrowser } from "@/components/LetakBrowser";
 import { PageIntro } from "@/components/PageIntro";
+import { ViberSignup } from "@/components/SiteForms";
 import { currentFlyer } from "@/data/flyers";
 import { formatRange } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
@@ -22,7 +23,9 @@ export default function LetakPage() {
           { name: "Početna", path: "/" },
           { name: "Katalog", path: "/letak" },
         ]}
-      />
+      >
+        <ViberSignup tone="dark" />
+      </PageIntro>
       <LetakBrowser />
     </>
   );
