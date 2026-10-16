@@ -1,7 +1,7 @@
 "use client";
 
 import { DealCard } from "@/components/DealCard";
-import { akcijaCategories, namirniceDeals } from "@/data/oktobar-akcija";
+import { akcijaCategories, oktobarDeals } from "@/data/oktobar-akcija";
 import { stores } from "@/data/stores";
 import type { CategoryId, Deal } from "@/data/types";
 import { cn } from "@/lib/cn";
@@ -11,8 +11,6 @@ import { useMemo, useState } from "react";
 
 type SortKey = "discount" | "price" | "name";
 
-const editorial = [...namirniceDeals].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
-
 function matchesStore(deal: Deal, storeId: string) {
   if (storeId === "all") return true;
   if (deal.storeIds === "all") return true;
@@ -20,12 +18,12 @@ function matchesStore(deal: Deal, storeId: string) {
 }
 
 export function DealExplorer({ variant = "home" }: { variant?: "home" | "full" }) {
-  const [category, setCategory] = useState<CategoryId | "sve">("sve");
+  const [category, setCategory] = useState<CategoryId | "sve">(variant === "home" ? "osnovno" : "sve");
   const [storeId, setStoreId] = useState("all");
-  const [sort, setSort] = useState<SortKey>(variant === "full" ? "discount" : "discount");
+  const [sort, setSort] = useState<SortKey>("discount");
 
   const visible = useMemo(() => {
-    let list = (variant === "home" ? editorial : [...namirniceDeals]).filter((deal) => {
+    let list = [...oktobarDeals].filter((deal) => {
       const categoryOk = category === "sve" || deal.category === category;
       return categoryOk && matchesStore(deal, storeId);
     });
@@ -93,30 +91,22 @@ export function DealExplorer({ variant = "home" }: { variant?: "home" | "full" }
           Nema akcija za ovaj izbor.
         </p>
       ) : (
-        <motion.ul
-          layout
-          className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 lg:gap-5"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: "some", margin: "0px 0px -12% 0px" }}
-          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
-        >
-          <AnimatePresence mode="popLayout">
+        <ul className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+          <AnimatePresence mode="popLayout" initial={false}>
             {visible.map((deal, index) => (
               <motion.li
                 key={deal.id}
                 layout
-                variants={{
-                  hidden: { opacity: 0, y: 40 },
-                  show: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } },
-                }}
-                exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.2 } }}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1], delay: Math.min(index, 8) * 0.03 }}
               >
                 <DealCard deal={deal} priority={index < 4} />
               </motion.li>
             ))}
           </AnimatePresence>
-        </motion.ul>
+        </ul>
       )}
 
       <p className="mt-6 text-center text-sm leading-relaxed text-muted">

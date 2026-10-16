@@ -222,7 +222,7 @@ export default function HomePage() {
             <SectionHeading
               eyebrow="Karijera"
               title="Zapošljavamo"
-              lede="Otvorene pozicije u marketima i na Cash & Carry. Javi se - prijava traje dvije minute."
+              lede="Otvorene pozicije u marketima i na Cash & Carry. Vaše informacije i CV pošaljite na email."
               className="mb-0 md:mb-0"
             />
             <Reveal delay={0.2}>

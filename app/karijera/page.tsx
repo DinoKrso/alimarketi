@@ -18,7 +18,7 @@ export default function KarijeraPage() {
       <PageIntro
         eyebrow="Posao"
         title="Zapošljavamo"
-        lede="Oglasi ispod su uzorak dok ne uđu stvarne pozicije. Prijava ostaje u pregledniku dok ne spojimo slanje."
+        lede="Oglasi ispod su uzorak dok ne uđu stvarne pozicije. Vaše informacije i CV pošaljite na email."
         crumbs={[
           { name: "Početna", path: "/" },
           { name: "Karijera", path: "/karijera" },

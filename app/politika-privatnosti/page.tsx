@@ -27,13 +27,15 @@ export default function PrivacyPage() {
         <h2 className="pt-6 font-display text-2xl font-bold">Šta se čuva na uređaju</h2>
         <p>Lista za kupovinu stoji u localStorage preglednika, pod ključem alimarketi-lista. Ne šalje se na server.</p>
         <p>Ako sačuvaš broj za Viber obavijest, i on ostaje samo u tom pregledniku. Slanje poruka još nije spojeno.</p>
-        <p>Obrasci za kontakt, veleprodaju i prijavu na posao trenutno ne šalju podatke na server. Poruka ostaje u pregledniku dok se ne spoji e-pošta.</p>
+        <p>
+          Na sajtu nema obrazaca koji šalju podatke na server. Kontakt, veleprodaja i prijave idu e-poštom na {site.email}.
+        </p>
         <h2 className="pt-6 font-display text-2xl font-bold">Lokacija</h2>
         <p>
           Najbliži market traži dozvolu preglednika. Koordinate se koriste samo da se izračuna udaljenost do poslovnica i ne snimaju se kod nas.
         </p>
         <h2 className="pt-6 font-display text-2xl font-bold">CV</h2>
-        <p>Datoteka životopisa se bira na uređaju. Upload nije spojen, pa se fajl ne prenosi.</p>
+        <p>Životopis se šalje direktno na {site.email}. Sajt ne prima ni čuva datoteke.</p>
         <p>Za pitanja o podacima piši na {site.email}.</p>
       </div>
     </>

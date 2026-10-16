@@ -1,4 +1,4 @@
-import type { Deal } from "@/data/types";
+import type { CategoryId, Deal } from "@/data/types";
 import proizvodiJson from "@/public/web_proizvodi/proizvodi.json";
 
 export type Proizvod = (typeof proizvodiJson)[number];
@@ -11,6 +11,13 @@ export function slikaSrc(slika: string) {
   return `/images/akcija-oktobar-2026/${file}`;
 }
 
+const categoryByLabel: Record<string, CategoryId> = {
+  Namirnice: "osnovno",
+  "Slatko i grickalice": "slatkisi",
+  Pića: "pica",
+  "Kozmetika i dom": "kucna-hemija",
+};
+
 function toDeal(product: Proizvod): Deal {
   return {
     id: `oktobar-${product.rb}`,
@@ -18,7 +25,7 @@ function toDeal(product: Proizvod): Deal {
     brand: product.brend,
     unit: product.pakovanje,
     price: product.cijena_km,
-    category: "osnovno",
+    category: categoryByLabel[product.kategorija] ?? "osnovno",
     categoryName: product.kategorija,
     badge: product.oznaka || undefined,
     storeIds: "all",
@@ -28,10 +35,15 @@ function toDeal(product: Proizvod): Deal {
   };
 }
 
-/** October groceries only — the akcije grid. */
-export const namirniceDeals: Deal[] = proizvodi.filter((item) => item.kategorija === "Namirnice").map(toDeal);
+/** Full October catalogue for the akcije grid. */
+export const oktobarDeals: Deal[] = proizvodi.map(toDeal);
 
-export const akcijaCategories = [{ id: "osnovno" as const, label: "Namirnice" }];
+export const akcijaCategories: { id: CategoryId; label: string }[] = [
+  { id: "osnovno", label: "Namirnice" },
+  { id: "slatkisi", label: "Slatko i grickalice" },
+  { id: "pica", label: "Pića" },
+  { id: "kucna-hemija", label: "Kozmetika i dom" },
+];
 
 /** Hero cards: the super price, then two top offers from the same catalogue. */
 const heroRbs = [1, 15, 44];

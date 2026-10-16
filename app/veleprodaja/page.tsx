@@ -137,7 +137,7 @@ export default function VeleprodajaPage() {
           <Reveal className="lg:col-span-6" delay={0.1}>
             <div className="h-full rounded-[28px] bg-ink p-6 text-paper md:p-8">
               <h2 className="font-display text-3xl font-bold">Pošalji upit</h2>
-              <p className="mt-2 mb-6 text-paper/65">Javit ćemo se s ponudom i uslovima.</p>
+              <p className="mt-2 mb-6 text-paper/65">Vaše informacije i CV pošaljite na email.</p>
               <div className="rounded-[22px] bg-paper p-5 text-ink md:p-6">
                 <EnquiryForm />
               </div>

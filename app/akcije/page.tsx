@@ -4,7 +4,7 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "Akcije",
-  description: "Namirnice iz oktobarske akcije u marketima Ali Marketi. Dodaj na listu i pošalji je na Viber.",
+  description: "Oktobarska akcija u marketima Ali Marketi. Namirnice, slatkiši, pića i proizvodi za dom.",
   path: "/akcije",
 });
 

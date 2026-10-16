@@ -70,7 +70,7 @@ export default function KontaktPage() {
           <Reveal className="lg:col-span-7">
             <div className="h-full rounded-[28px] border border-line bg-white p-6 lift md:p-10">
               <h2 className="font-display text-3xl font-bold md:text-4xl">Piši nam</h2>
-              <p className="mt-2 mb-8 text-muted">Ostavi poruku i javit ćemo ti se.</p>
+              <p className="mt-2 mb-8 text-muted">Vaše informacije i CV pošaljite na email.</p>
               <ContactForm />
             </div>
           </Reveal>

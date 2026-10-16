@@ -97,7 +97,7 @@ export default async function JobPage({ params }: Props) {
           <Reveal className="lg:col-span-5" delay={0.1}>
             <div className="rounded-[28px] bg-ink p-6 text-paper lg:sticky lg:top-24 md:p-8">
               <h2 className="font-display text-3xl font-bold">Prijava</h2>
-              <p className="mt-2 mb-6 text-paper/65">Popuni podatke i priloži CV.</p>
+              <p className="mt-2 mb-6 text-paper/65">Vaše informacije i CV pošaljite na email.</p>
               <div className="rounded-[22px] bg-paper p-5 text-ink md:p-6">
                 <JobApplicationForm position={job.title} />
               </div>
