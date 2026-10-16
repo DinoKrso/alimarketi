@@ -14,6 +14,11 @@ export function listCountLabel(count: number) {
   return `${count} ${word} na listi`;
 }
 
+export function productCountLabel(count: number) {
+  const one = count % 10 === 1 && count % 100 !== 11;
+  return `${count} ${one ? "proizvod" : "proizvoda"}`;
+}
+
 export function formatKm(value: number) {
   const [whole, frac] = value.toFixed(2).split(".");
   return `${whole},${frac}`;

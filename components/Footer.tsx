@@ -10,7 +10,7 @@ export function Footer() {
       <div className="panel-ink mx-auto max-w-[1600px] rounded-[28px] sm:rounded-[36px]">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 pt-16 pb-10 sm:px-8 md:grid-cols-12 md:pt-20">
           <div className="md:col-span-4">
-            <Logo className="h-12 w-fit [&_img]:h-12" />
+            <Logo className="w-fit [&_svg]:h-14" />
             <p className="mt-3 max-w-xs text-base text-paper/65">
               Vaša dnevna rutina. {site.legalName}, {site.city}, od {site.founded}.
             </p>
@@ -87,9 +87,17 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div aria-hidden className="overflow-hidden px-4 select-none">
-          <p className="text-center font-display text-[clamp(4rem,17vw,16rem)] leading-[0.8] font-extrabold tracking-[-0.06em] text-white/[0.05]">
-            ali marketi
+        <div aria-hidden className="overflow-hidden px-4 pt-6 select-none">
+          <p className="wordmark text-center font-display text-[clamp(4rem,17vw,16rem)] leading-[0.8] font-extrabold tracking-[-0.06em] text-white/[0.05]">
+            {Array.from("ali marketi").map((char, index) =>
+              char === " " ? (
+                <span key={index} className="inline-block w-[0.25em]" />
+              ) : (
+                <span key={index} className="inline-block">
+                  {char}
+                </span>
+              ),
+            )}
           </p>
         </div>
         <div className="border-t border-white/10">

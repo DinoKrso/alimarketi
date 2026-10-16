@@ -58,6 +58,25 @@ export function isStoreOpen(hours: WeekHours, date = new Date()) {
   return minutes >= toMinutes(slot.open) && minutes < toMinutes(slot.close);
 }
 
+export function openingLine(hours: WeekHours, date = new Date()) {
+  const { day, minutes } = sarajevoClock(date);
+  const slot = hours[day];
+  if (slot && minutes >= toMinutes(slot.open) && minutes < toMinutes(slot.close)) {
+    return { open: true, text: `danas do ${slot.close}` };
+  }
+  if (slot && minutes < toMinutes(slot.open)) return { open: false, text: `otvaramo u ${slot.open}` };
+  const index = dayOrder.indexOf(day);
+  for (let step = 1; step <= 7; step += 1) {
+    const next = dayOrder[(index + step) % 7];
+    const nextSlot = hours[next];
+    if (nextSlot) {
+      const when = step === 1 ? "sutra" : dayLabels[next].toLowerCase();
+      return { open: false, text: `${when} od ${nextSlot.open}` };
+    }
+  }
+  return { open: false, text: "" };
+}
+
 export function formatSlot(slot: WeekHours[DayKey]) {
   if (!slot) return "Zatvoreno";
   return `${slot.open}–${slot.close}`;

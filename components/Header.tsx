@@ -2,6 +2,7 @@
 
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/Logo";
+import { Magnetic } from "@/components/Magnetic";
 import { nav } from "@/data/site";
 import { listCountLabel } from "@/lib/format";
 import { useShoppingList } from "@/lib/shopping-list";
@@ -79,7 +80,7 @@ export function Header() {
             : "border border-transparent bg-transparent",
         )}
       >
-        <Logo onNavigate={() => setMenuPath(null)} />
+        <Logo compact={scrolled && !menu} onNavigate={() => setMenuPath(null)} />
         <nav
           className="ml-8 hidden items-center xl:flex"
           aria-label="Glavna navigacija"
@@ -113,10 +114,12 @@ export function Header() {
         </nav>
         <div className="ml-auto flex items-center gap-2">
           <ListButton className="hidden md:inline-flex" />
-          <Link href="/poslovnice?najblizi=1" className="press inline-flex h-11 items-center gap-2 rounded-full bg-brand px-5 text-[15px] font-semibold whitespace-nowrap text-ink shadow-[0_10px_30px_-12px_rgb(241_94_25/0.8)] hover:bg-brand-dark max-sm:hidden">
-            <Icon name="navigate" className="h-4 w-4" />
-            Najbliži market
-          </Link>
+          <Magnetic className="inline-flex max-sm:hidden" strength={0.22}>
+            <Link href="/poslovnice?najblizi=1" className="press inline-flex h-11 items-center gap-2 rounded-full bg-brand px-5 text-[15px] font-semibold whitespace-nowrap text-ink shadow-[0_10px_30px_-12px_rgb(241_94_25/0.8)] hover:bg-brand-dark">
+              <Icon name="navigate" className="h-4 w-4" />
+              Najbliži market
+            </Link>
+          </Magnetic>
           <button
             type="button"
             className="press grid h-11 w-11 place-items-center rounded-full border border-line bg-white xl:hidden"

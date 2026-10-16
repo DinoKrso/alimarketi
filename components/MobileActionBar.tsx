@@ -35,10 +35,23 @@ export function MobileActionBar() {
               <Link
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={cn(item, active ? "bg-ink text-paper" : "text-ink hover:bg-ink/5")}
+                className={cn(item, active ? "text-paper" : "text-ink hover:bg-ink/5")}
               >
-                <Icon name={link.icon} className={cn("h-5 w-5", active ? "text-brand" : "text-ink/70")} />
-                {link.label}
+                {active ? (
+                  <motion.span
+                    layoutId="tab-pill"
+                    className="absolute inset-0 rounded-[18px] bg-ink"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  />
+                ) : null}
+                <motion.span
+                  className="relative"
+                  animate={active && !reduce ? { y: [0, -4, 0] } : { y: 0 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                  <Icon name={link.icon} className={cn("h-5 w-5", active ? "text-brand" : "text-ink/70")} />
+                </motion.span>
+                <span className="relative">{link.label}</span>
               </Link>
             </li>
           );

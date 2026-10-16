@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedLogo } from "@/components/AnimatedLogo";
 import { motion } from "motion/react";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
@@ -47,7 +48,7 @@ const curtain = [0.76, 0, 0.24, 1] as const;
 const ease = [0.16, 1, 0.3, 1] as const;
 
 /** How long the logo stays on screen before the curtain lifts. */
-const HOLD_MS = 1500;
+const HOLD_MS = 1900;
 
 export function Splash() {
   const skipped = useSkipped();
@@ -106,15 +107,11 @@ export function Splash() {
       >
         <div className="panel-ink pointer-events-auto grid h-full w-full place-items-center">
           <motion.div
-            initial={{ opacity: 0, scale: 0.85, filter: "blur(12px)" }}
-            animate={
-              exiting
-                ? { opacity: 0, y: -30, scale: 0.96, filter: "blur(0px)" }
-                : { opacity: 1, scale: 1, filter: "blur(0px)" }
-            }
-            transition={exiting ? { duration: 0.4, ease: [0.4, 0, 1, 1] } : { duration: 0.8, ease }}
+            initial={{ opacity: 1, scale: 0.94 }}
+            animate={exiting ? { opacity: 0, y: -30, scale: 0.96 } : { opacity: 1, scale: 1 }}
+            transition={exiting ? { duration: 0.4, ease: [0.4, 0, 1, 1] } : { duration: 1.6, ease }}
           >
-            <img src="/logo-ali.svg" alt="" width={161} height={100} className="h-auto w-[min(82vw,34rem)]" />
+            <AnimatedLogo intro className="h-auto w-[min(78vw,30rem)]" />
           </motion.div>
         </div>
       </motion.div>

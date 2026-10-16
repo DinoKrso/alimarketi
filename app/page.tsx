@@ -4,6 +4,7 @@ import { Hero } from "@/components/Hero";
 import { Icon } from "@/components/Icon";
 import { Parallax, Reveal, Stagger, StaggerItem, TiltIn } from "@/components/Motion";
 import { SectionHeading } from "@/components/SectionHeading";
+import { ViberSignup } from "@/components/SiteForms";
 import { StoreFinder } from "@/components/StoreFinder";
 import { currentFlyer } from "@/data/flyers";
 import { jobs } from "@/data/jobs";
@@ -100,25 +101,28 @@ export default function HomePage() {
                 ) : null}
               </div>
             </Reveal>
+            <Reveal delay={0.34} className="mt-8 max-w-md">
+              <ViberSignup />
+            </Reveal>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[520px] lg:col-span-6 lg:col-start-7">
+          <div className="group/fan relative mx-auto w-full max-w-[520px] lg:col-span-6 lg:col-start-7">
             {third ? (
               <Parallax speed={40} className="absolute top-10 -right-10 hidden w-[62%] sm:block">
-                <div className="rotate-[9deg] overflow-hidden rounded-2xl border border-line bg-white opacity-90 shadow-xl">
+                <div className="rotate-[9deg] overflow-hidden rounded-2xl border border-line bg-white opacity-90 shadow-xl transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/fan:translate-x-10 group-hover/fan:rotate-[16deg]">
                   <Image src={third.src} alt="" width={third.width} height={third.height} sizes="300px" className="h-auto w-full" />
                 </div>
               </Parallax>
             ) : null}
             {second ? (
               <Parallax speed={70} className="absolute top-4 -left-10 hidden w-[62%] sm:block">
-                <div className="-rotate-[8deg] overflow-hidden rounded-2xl border border-line bg-white opacity-90 shadow-xl">
+                <div className="-rotate-[8deg] overflow-hidden rounded-2xl border border-line bg-white opacity-90 shadow-xl transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/fan:-translate-x-10 group-hover/fan:-rotate-[15deg]">
                   <Image src={second.src} alt="" width={second.width} height={second.height} sizes="300px" className="h-auto w-full" />
                 </div>
               </Parallax>
             ) : null}
             <TiltIn className="relative mx-auto w-[82%] sm:w-[78%]">
-              <Link href="/letak" className="group block overflow-hidden rounded-3xl border border-line bg-white shadow-[0_40px_90px_-30px_rgb(15_43_33/0.55)]">
+              <Link href="/letak" className="group block overflow-hidden rounded-3xl border border-line bg-white shadow-[0_40px_90px_-30px_rgb(15_43_33/0.55)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/fan:-translate-y-3">
                 <div className="img-zoom overflow-hidden">
                   <Image
                     src={cover.src}
