@@ -1,10 +1,20 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import sharp from "sharp";
 
-export const alt = "Ali Marketi - Vaša dnevna rutina";
+export const alt = "Ali Marketi";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OgImage() {
+export default async function OgImage() {
+  const svg = await readFile(join(process.cwd(), "public/logo-ali.svg"));
+  const png = await sharp(svg)
+    .resize({ width: 720, height: 420, fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .png()
+    .toBuffer();
+  const logoSrc = `data:image/png;base64,${png.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -12,55 +22,22 @@ export default function OgImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
+          alignItems: "center",
+          justifyContent: "center",
           background: "#FAF5EC",
-          color: "#12261E",
-          padding: "64px",
         }}
       >
-        <div style={{ display: "flex", fontSize: 42, fontWeight: 800 }}>
-          <span style={{ color: "#F15E19" }}>ali</span>
-          <span style={{ marginLeft: 12 }}>MARKETI</span>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 84, fontWeight: 800, lineHeight: 0.95, letterSpacing: -2 }}>
-            Vaša dnevna rutina.
-          </div>
-          <div style={{ marginTop: 24, fontSize: 32, color: "#5B6B63" }}>
-            12 marketa po Sarajevu. Svježe, blizu i po pravoj cijeni.
-          </div>
-        </div>
-        <div style={{ display: "flex", gap: 16 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              background: "#FFFFFF",
-              border: "2px solid rgba(18,38,30,0.15)",
-              borderRadius: 8,
-              padding: "16px 20px",
-              fontSize: 28,
-              fontWeight: 700,
-            }}
-          >
-            12 marketa u Sarajevu
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              background: "#F15E19",
-              color: "#12261E",
-              borderRadius: 8,
-              padding: "0 22px",
-              fontSize: 28,
-              fontWeight: 700,
-            }}
-          >
-            Katalog i akcije
-          </div>
-        </div>
+        {/* Soft brand glow behind the mark */}
+        <div
+          style={{
+            position: "absolute",
+            width: 560,
+            height: 560,
+            borderRadius: 999,
+            background: "rgba(241, 94, 25, 0.14)",
+          }}
+        />
+        <img src={logoSrc} width={720} height={420} alt="" />
       </div>
     ),
     { ...size },

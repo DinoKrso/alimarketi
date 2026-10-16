@@ -12,7 +12,7 @@ const shareImage = {
   url: "/opengraph-image",
   width: 1200,
   height: 630,
-  alt: "Ali Marketi - Vaša dnevna rutina",
+  alt: "Ali Marketi",
 };
 
 export function pageMetadata({ title, description, path }: PageSeo): Metadata {
