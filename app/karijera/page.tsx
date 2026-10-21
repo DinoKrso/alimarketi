@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export const metadata = pageMetadata({
   title: "Karijera",
-  description: "Otvorene pozicije u marketima Ali Marketi i na Cash & Carry u Halilovićima.",
+  description: "Otvorena pozicija trgovca / prodavača u marketima Ali Marketi. Tražimo više izvršilaca.",
   path: "/karijera",
 });
 
@@ -18,7 +18,7 @@ export default function KarijeraPage() {
       <PageIntro
         eyebrow="Posao"
         title="Zapošljavamo"
-        lede="Oglasi ispod su uzorak dok ne uđu stvarne pozicije. Vaše informacije i CV pošaljite na email."
+        lede="Trenutno tražimo trgovce i prodavače. Vaše informacije i CV pošaljite na email."
         crumbs={[
           { name: "Početna", path: "/" },
           { name: "Karijera", path: "/karijera" },
@@ -26,7 +26,7 @@ export default function KarijeraPage() {
       >
         <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-paper">
           <span aria-hidden className="open-pulse h-2 w-2 rounded-full bg-fresh" />
-          {jobs.length} otvorenih pozicija
+          {jobs.length} {jobs.length === 1 ? "otvorena pozicija" : "otvorenih pozicija"}
         </p>
       </PageIntro>
       <section className="ground-paper-sand">
@@ -48,7 +48,9 @@ export default function KarijeraPage() {
                       <span className="mt-1 block text-muted transition-colors group-hover:text-paper/70">{job.summary}</span>
                     </span>
                     <span className="flex flex-wrap items-center gap-2 text-sm">
-                      <span className="rounded-full bg-paper px-3 py-1 font-semibold text-ink">{store?.neighbourhood}</span>
+                      {store ? (
+                        <span className="rounded-full bg-paper px-3 py-1 font-semibold text-ink">{store.neighbourhood}</span>
+                      ) : null}
                       <span className="rounded-full border border-line px-3 py-1 transition-colors group-hover:border-white/20">
                         {job.type}
                       </span>

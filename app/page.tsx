@@ -222,7 +222,7 @@ export default function HomePage() {
             <SectionHeading
               eyebrow="Karijera"
               title="Zapošljavamo"
-              lede="Otvorene pozicije u marketima i na Cash & Carry. Vaše informacije i CV pošaljite na email."
+              lede="Otvorena pozicija u marketima Ali Marketi. Vaše informacije i CV pošaljite na email."
               className="mb-0 md:mb-0"
             />
             <Reveal delay={0.2}>
@@ -247,7 +247,7 @@ export default function HomePage() {
                     <span className="min-w-0 flex-1">
                       <span className="block font-display text-2xl leading-tight font-bold">{job.title}</span>
                       <span className="mt-0.5 block text-sm text-muted transition-colors group-hover:text-paper/70">
-                        {store?.neighbourhood} · {job.type}
+                        {store ? `${store.neighbourhood} · ${job.type}` : job.type}
                       </span>
                     </span>
                     <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line transition-all duration-300 group-hover:-rotate-45 group-hover:border-brand group-hover:bg-brand group-hover:text-ink">
